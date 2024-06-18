@@ -3,8 +3,8 @@ import { logo } from "../assets";
 const Hero = () => {
   return (
     <header className="w-full flex justify-center items-center flex-col">
-      <nav className="flex justify-between items-center w-full mb-10 pt-3">
-        <img src={logo} alt="sumz logo" className="w-28 object-contain" />
+      <nav className="flex justify-between items-center w-full mb-1 pt-3">
+        <img src={logo} alt="sumit logo" className="w-52 object-contain" />
         <button
           type="button"
           onClick={() =>
