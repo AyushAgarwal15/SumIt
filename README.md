@@ -1,4 +1,4 @@
-<h1>SumIt - Article Summarizer <a href="[https://sum-it-ayushagarwal15s-projects.vercel.app/](https://sum-it-pi.vercel.app/)" target="_blank">Live Demo 👁️ </a> </h1>
+<h1>SumIt - Article Summarizer <a href="https://sum-it-pi.vercel.app/" target="_blank">Live Demo 👁️ </a> </h1>
 <p>. Summarize Articles with OpenAI GPT-4 </p>
 <p>. Simplify your reading with Summize, an open-source article summarizer that transforms lengthy articles into clear and concise summaries.</p> 
 <p>Features: Article Summarization, URL History, Instant Historical Summaries.</p>
