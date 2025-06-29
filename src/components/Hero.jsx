@@ -18,14 +18,13 @@ const Hero = () => {
         </div>
 
         <div className="flex gap-2">
-          <a
-            href="https://ayushagarwal.vercel.app/"
-            target="_blank"
-            rel="noopener noreferrer"
+          <button
+            type="button"
+            onClick={() => window.open("https://ayushagarwal.vercel.app/")}
             className="black_btn text-xs sm:text-sm md:text-base px-2 sm:px-3 md:px-4 py-1.5 sm:py-2"
           >
             Portfolio
-          </a>
+          </button>
           <button
             type="button"
             onClick={() =>
