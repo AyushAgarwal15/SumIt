@@ -2,81 +2,37 @@
 @tailwind components;
 @tailwind utilities;
 
-/* 
-  Note: The styles for this gradient grid background is heavily inspired by the creator of this amazing site (https://dub.sh) – all credits go to them! 
-*/
-
+/* Custom styles */
 .main {
-  width: 100vw;
   min-height: 100vh;
-  position: fixed;
+  position: relative;
   display: flex;
-  justify-content: center;
-  padding: 120px 24px 160px 24px;
-  pointer-events: none;
-}
-
-.main:before {
-  background: radial-gradient(circle, rgba(2, 0, 36, 0) 0, #fafafa 100%);
-  position: absolute;
-  content: "";
-  z-index: 2;
-  width: 100%;
-  height: 100%;
-  top: 0;
-}
-
-.main:after {
-  content: "";
-  background-image: url("/src/assets/grid.svg");
-  z-index: 1;
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  top: 0;
-  opacity: 0.4;
-  filter: invert(1);
-}
-
-.gradient {
-  height: fit-content;
-  z-index: 3;
-  width: 100%;
-  max-width: 640px;
+  flex-direction: column;
+  background-color: #ffffff;
   background-image: radial-gradient(
-      at 27% 37%,
-      hsla(215, 98%, 61%, 1) 0px,
-      transparent 0%
+      at 0% 0%,
+      rgba(34, 197, 94, 0.05) 0,
+      transparent 50%
     ),
-    radial-gradient(at 97% 21%, hsla(125, 98%, 72%, 1) 0px, transparent 50%),
-    radial-gradient(at 52% 99%, hsla(354, 98%, 61%, 1) 0px, transparent 50%),
-    radial-gradient(at 10% 29%, hsla(256, 96%, 67%, 1) 0px, transparent 50%),
-    radial-gradient(at 97% 96%, hsla(38, 60%, 74%, 1) 0px, transparent 50%),
-    radial-gradient(at 33% 50%, hsla(222, 67%, 73%, 1) 0px, transparent 50%),
-    radial-gradient(at 79% 53%, hsla(343, 68%, 79%, 1) 0px, transparent 50%);
-  position: absolute;
-  content: "";
-  width: 100%;
-  height: 100%;
-  filter: blur(100px) saturate(150%);
-  top: 80px;
-  opacity: 0.15;
+    radial-gradient(at 50% 0%, rgba(59, 130, 246, 0.05) 0, transparent 50%),
+    radial-gradient(at 100% 0%, rgba(236, 72, 153, 0.05) 0, transparent 50%);
+  overflow-x: hidden;
 }
-
-@media screen and (max-width: 640px) {
-  .main {
-    padding: 0;
-  }
-}
-
-/* Tailwind Styles */
 
 .app {
-  @apply relative z-10 flex justify-center items-center flex-col max-w-7xl mx-auto sm:px-16 px-6;
+  @apply relative z-10 flex flex-col max-w-7xl mx-auto sm:px-16 px-6;
+}
+
+.nav {
+  @apply fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-sm border-b border-gray-200;
+}
+
+.nav-content {
+  @apply max-w-7xl mx-auto px-6 sm:px-16 py-4 flex justify-between items-center;
 }
 
 .black_btn {
-  @apply rounded-full border border-black bg-black py-1.5 px-5 text-lg font-bold text-white transition-all hover:bg-white hover:text-black;
+  @apply rounded-full border border-black bg-black py-1.5 px-5 text-sm text-white transition-all hover:bg-white hover:text-black;
 }
 
 .head_text {
@@ -87,8 +43,16 @@
   @apply bg-gradient-to-r from-amber-500 via-orange-600 to-yellow-500 bg-clip-text text-transparent;
 }
 
+.green_gradient {
+  @apply bg-gradient-to-r from-green-400 to-green-500 bg-clip-text text-transparent;
+}
+
+.blue_gradient {
+  @apply bg-gradient-to-r from-blue-600 to-cyan-600 bg-clip-text text-transparent;
+}
+
 .desc {
-  @apply mt-5 text-lg text-gray-600 sm:text-xl text-center max-w-2xl;
+  @apply mt-5 text-lg text-gray-600 sm:text-xl text-center max-w-2xl mx-auto;
 }
 
 .url_input {
@@ -100,17 +64,183 @@
 }
 
 .link_card {
-  @apply p-3 flex justify-start items-center flex-row bg-white border border-gray-200 gap-3 rounded-lg cursor-pointer;
+  @apply p-3 flex justify-start items-center flex-row bg-white border border-gray-200 gap-3 rounded-lg cursor-pointer hover:shadow-md transition-shadow;
 }
 
 .copy_btn {
   @apply w-7 h-7 rounded-full bg-white/10 shadow-[inset_10px_-50px_94px_0_rgb(199,199,199,0.2)] backdrop-blur flex justify-center items-center cursor-pointer;
 }
 
-.blue_gradient {
-  @apply font-black bg-gradient-to-r from-blue-600 to-cyan-600 bg-clip-text text-transparent;
-}
-
 .summary_box {
   @apply rounded-xl border border-gray-200 bg-white/20 shadow-[inset_10px_-50px_94px_0_rgb(199,199,199,0.2)] backdrop-blur p-4;
+}
+
+/* Animations */
+@keyframes gradient {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.animate-gradient {
+  background-size: 200% 200%;
+  animation: gradient 15s ease infinite;
+}
+
+/* Hover effects */
+.hover-lift {
+  transition: transform 0.2s ease;
+}
+
+.hover-lift:hover {
+  transform: translateY(-2px);
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+/* Loading animation */
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+.animate-pulse {
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* Focus styles */
+.focus-ring {
+  @apply focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2;
+}
+
+/* Button styles */
+.btn-primary {
+  @apply px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus-ring;
+}
+
+.btn-secondary {
+  @apply px-4 py-2 bg-gray-100 text-gray-800 rounded-lg hover:bg-gray-200 focus-ring;
+}
+
+/* Card styles */
+.card {
+  @apply bg-white rounded-xl shadow-md hover:shadow-lg transition-shadow p-6;
+}
+
+/* Typography */
+.heading-1 {
+  @apply text-4xl font-bold text-gray-900 sm:text-5xl;
+}
+
+.heading-2 {
+  @apply text-3xl font-bold text-gray-900 sm:text-4xl;
+}
+
+.body-text {
+  @apply text-base text-gray-600;
+}
+
+/* Layout utilities */
+.container-padding {
+  @apply px-4 sm:px-6 lg:px-8;
+}
+
+.section-spacing {
+  @apply py-12 sm:py-16 lg:py-20;
+}
+
+/* Responsive design utilities */
+.responsive-grid {
+  @apply grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3;
+}
+
+.responsive-flex {
+  @apply flex flex-col sm:flex-row items-center gap-4;
+}
+
+/* Share Panel Styles */
+.share-panel {
+  @apply fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 transform transition-transform duration-300 ease-in-out z-50 rounded-t-2xl shadow-2xl;
+}
+
+.share-panel.open {
+  @apply translate-y-0;
+}
+
+.share-panel.closed {
+  @apply translate-y-full;
+}
+
+.share-grid {
+  @apply grid grid-cols-4 gap-4 p-6;
+}
+
+.share-item {
+  @apply flex flex-col items-center justify-center gap-2 p-3 rounded-xl hover:bg-gray-50 transition-colors cursor-pointer;
+}
+
+.share-icon {
+  @apply w-12 h-12 rounded-full flex items-center justify-center text-white;
+}
+
+/* Summary Card Styles */
+.summary-card {
+  @apply bg-white rounded-2xl border border-gray-200 shadow-sm hover:shadow-md transition-shadow overflow-hidden;
+}
+
+.summary-header {
+  @apply flex items-center justify-between p-4 border-b border-gray-100;
+}
+
+.summary-content {
+  @apply p-6 space-y-4;
+}
+
+.summary-text {
+  @apply text-gray-700 leading-relaxed;
+}
+
+.summary-actions {
+  @apply flex items-center gap-2 mt-4 pt-4 border-t border-gray-100;
+}
+
+.action-btn {
+  @apply flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors;
+}
+
+.primary-btn {
+  @apply bg-blue-600 text-white hover:bg-blue-700;
+}
+
+.secondary-btn {
+  @apply bg-gray-100 text-gray-700 hover:bg-gray-200;
 }

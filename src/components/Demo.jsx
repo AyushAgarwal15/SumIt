@@ -1,7 +1,5 @@
 import { useState, useEffect } from "react";
-
 import { copy, linkIcon, loader, tick } from "../assets";
-import { useLazyGetSummaryQuery } from "../services/article";
 
 const Demo = () => {
   const [article, setArticle] = useState({
@@ -10,11 +8,10 @@ const Demo = () => {
   });
   const [allArticles, setAllArticles] = useState([]);
   const [copied, setCopied] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [isReSummarizing, setIsReSummarizing] = useState(false);
 
-  // RTK lazy query
-  const [getSummary, { error, isFetching }] = useLazyGetSummaryQuery();
-
-  // Load data from localStorage on mount
   useEffect(() => {
     const articlesFromLocalStorage = JSON.parse(
       localStorage.getItem("articles")
@@ -25,45 +22,100 @@ const Demo = () => {
     }
   }, []);
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const handleSubmit = async (e, forceNew = false) => {
+    e?.preventDefault();
+    setError("");
 
     const existingArticle = allArticles.find(
       (item) => item.url === article.url
     );
 
-    if (existingArticle) return setArticle(existingArticle);
+    if (existingArticle && !forceNew) {
+      setArticle(existingArticle);
+      return;
+    }
 
-    const { data } = await getSummary({ articleUrl: article.url });
+    setLoading(true);
 
-    if (data?.summary) {
-      const newArticle = { ...article, summary: data.summary };
-      const updatedAllArticles = [newArticle, ...allArticles];
+    try {
+      const response = await fetch(
+        "https://article-extractor-and-summarizer.p.rapidapi.com/summarize",
+        {
+          method: "POST",
+          headers: {
+            "content-type": "application/json",
+            "X-RapidAPI-Key": import.meta.env.VITE_RAPID_API_ARTICLE_KEY,
+            "X-RapidAPI-Host":
+              "article-extractor-and-summarizer.p.rapidapi.com",
+          },
+          body: JSON.stringify({ url: article.url }),
+        }
+      );
 
-      // update state and local storage
-      console.log(newArticle);
-      setArticle(newArticle);
-      setAllArticles(updatedAllArticles);
-      localStorage.setItem("articles", JSON.stringify(updatedAllArticles));
+      const data = await response.json();
+
+      if (data.summary) {
+        const newArticle = { ...article, summary: data.summary };
+        let updatedAllArticles;
+
+        if (existingArticle) {
+          // Update existing article
+          updatedAllArticles = allArticles.map((item) =>
+            item.url === article.url ? newArticle : item
+          );
+        } else {
+          // Add new article
+          updatedAllArticles = [newArticle, ...allArticles];
+        }
+
+        setArticle(newArticle);
+        setAllArticles(updatedAllArticles);
+        localStorage.setItem("articles", JSON.stringify(updatedAllArticles));
+      }
+    } catch (err) {
+      setError(
+        "Sorry, there was an error processing your request. Please try again."
+      );
+    } finally {
+      setLoading(false);
+      setIsReSummarizing(false);
     }
   };
 
-  // copy the url and toggle the icon for user feedback
   const handleCopy = (copyUrl) => {
     setCopied(copyUrl);
     navigator.clipboard.writeText(copyUrl);
     setTimeout(() => setCopied(false), 3000);
   };
 
-  const handleKeyDown = (e) => {
-    if (e.keyCode === 13) {
-      handleSubmit(e);
+  const handleShare = async () => {
+    try {
+      if (navigator.share) {
+        await navigator.share({
+          title: "Article Summary",
+          text: article.summary,
+          url: window.location.href,
+        });
+      } else {
+        handleCopy(article.summary);
+      }
+    } catch (err) {
+      console.log("Error sharing:", err);
     }
   };
 
+  const handleArticleClick = (item) => {
+    setArticle(item);
+    setIsReSummarizing(false);
+  };
+
+  const handleReSummarize = (e) => {
+    setIsReSummarizing(true);
+    handleSubmit(e, true);
+  };
+
   return (
-    <section className="mt-16 w-full max-w-xl">
-      {/* Search */}
+    <section className="mt-16 w-full max-w-xl mx-auto">
       <div className="flex flex-col w-full gap-2">
         <form
           className="relative flex justify-center items-center"
@@ -71,7 +123,7 @@ const Demo = () => {
         >
           <img
             src={linkIcon}
-            alt="link-icon"
+            alt="link_icon"
             className="absolute left-0 my-2 ml-3 w-5"
           />
 
@@ -80,13 +132,12 @@ const Demo = () => {
             placeholder="Paste the article link"
             value={article.url}
             onChange={(e) => setArticle({ ...article, url: e.target.value })}
-            onKeyDown={handleKeyDown}
             required
-            className="url_input peer" // When you need to style an element based on the state of a sibling element, mark the sibling with the peer class, and use peer-* modifiers to style the target element
+            className="url_input peer"
           />
           <button
             type="submit"
-            className="submit_btn peer-focus:border-gray-700 peer-focus:text-gray-700 "
+            className="submit_btn peer-focus:border-gray-700 peer-focus:text-gray-700"
           >
             <p>↵</p>
           </button>
@@ -94,13 +145,19 @@ const Demo = () => {
 
         {/* Browse History */}
         <div className="flex flex-col gap-1 max-h-60 overflow-y-auto">
-          {allArticles.reverse().map((item, index) => (
+          {allArticles.map((item, index) => (
             <div
               key={`link-${index}`}
-              onClick={() => setArticle(item)}
+              onClick={() => handleArticleClick(item)}
               className="link_card"
             >
-              <div className="copy_btn" onClick={() => handleCopy(item.url)}>
+              <div
+                className="copy_btn"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleCopy(item.url);
+                }}
+              >
                 <img
                   src={copied === item.url ? tick : copy}
                   alt={copied === item.url ? "tick_icon" : "copy_icon"}
@@ -117,26 +174,68 @@ const Demo = () => {
 
       {/* Display Result */}
       <div className="my-10 max-w-full flex justify-center items-center">
-        {isFetching ? (
+        {loading ? (
           <img src={loader} alt="loader" className="w-20 h-20 object-contain" />
         ) : error ? (
           <p className="font-inter font-bold text-black text-center">
-            Well, that was not supposed to happen...
+            {error}
             <br />
             <span className="font-satoshi font-normal text-gray-700">
-              {error?.data?.error}
+              Please try again later.
             </span>
           </p>
         ) : (
           article.summary && (
-            <div className="flex flex-col gap-3">
-              <h2 className="font-satoshi font-bold text-gray-600 text-xl">
-                Article <span className="blue_gradient">Summary</span>
-              </h2>
+            <div className="flex flex-col gap-3 w-full">
+              <div className="flex justify-between items-center">
+                <h2 className="font-satoshi font-bold text-gray-600 text-xl">
+                  Article <span className="blue_gradient">Summary</span>
+                </h2>
+                {!isReSummarizing && (
+                  <button
+                    onClick={handleReSummarize}
+                    className="px-3 py-1.5 text-sm text-blue-500 hover:text-blue-700 transition-colors"
+                  >
+                    Re-summarize
+                  </button>
+                )}
+              </div>
               <div className="summary_box">
                 <p className="font-inter font-medium text-sm text-gray-700">
                   {article.summary}
                 </p>
+                <div className="mt-4 flex gap-2">
+                  <button
+                    onClick={() => handleCopy(article.summary)}
+                    className="px-3 py-1.5 bg-white border border-gray-300 rounded-lg text-sm text-gray-700 hover:bg-gray-50 transition-colors flex items-center gap-2"
+                  >
+                    <img
+                      src={copied === article.summary ? tick : copy}
+                      alt="copy icon"
+                      className="w-4 h-4"
+                    />
+                    {copied === article.summary ? "Copied!" : "Copy"}
+                  </button>
+                  <button
+                    onClick={handleShare}
+                    className="px-3 py-1.5 bg-white border border-gray-300 rounded-lg text-sm text-gray-700 hover:bg-gray-50 transition-colors flex items-center gap-2"
+                  >
+                    <svg
+                      className="w-4 h-4"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"
+                      />
+                    </svg>
+                    Share
+                  </button>
+                </div>
               </div>
             </div>
           )
