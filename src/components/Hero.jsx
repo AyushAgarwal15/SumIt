@@ -5,20 +5,24 @@ const Hero = () => {
   return (
     <header
       id="hero"
-      className="w-full flex justify-center items-center flex-col px-2 sm:px-3 md:px-4 lg:px-6 xl:px-8"
+      className="w-full flex justify-center items-center flex-col px-3 sm:px-4 md:px-6 lg:px-8 py-4 sm:py-6 md:py-8 lg:py-12"
     >
-      <nav className="flex justify-between items-center w-full mb-3 sm:mb-4 md:mb-6 pt-2 sm:pt-3 max-w-7xl mx-auto">
-        <img
-          src={logo}
-          alt="sumit logo"
-          className="w-24 sm:w-28 md:w-32 lg:w-40 xl:w-52 object-contain"
-        />
-        <div className="flex gap-1.5 sm:gap-2 md:gap-3">
+      {/* Navbar */}
+      <nav className="flex justify-between items-center w-full max-w-7xl mb-4 sm:mb-6 md:mb-8">
+        <div className="logo-container">
+          <img
+            src={logo}
+            alt="sumit logo"
+            className="object-contain w-[clamp(4rem,10vw,10rem)]"
+          />
+        </div>
+
+        <div className="flex gap-2">
           <a
             href="https://ayushagarwal.vercel.app/"
             target="_blank"
             rel="noopener noreferrer"
-            className="black_btn text-xs sm:text-sm md:text-base px-2 sm:px-2.5 md:px-3 lg:px-4 xl:px-5 py-1.5"
+            className="black_btn text-xs sm:text-sm md:text-base px-2 sm:px-3 md:px-4 py-1.5 sm:py-2"
           >
             Portfolio
           </a>
@@ -27,22 +31,30 @@ const Hero = () => {
             onClick={() =>
               window.open("https://github.com/AyushAgarwal15/AI_Summarizer")
             }
-            className="black_btn text-xs sm:text-sm md:text-base px-2 sm:px-2.5 md:px-3 lg:px-4 xl:px-5 py-1.5"
+            className="black_btn text-xs sm:text-sm md:text-base px-2 sm:px-3 md:px-4 py-1.5 sm:py-2"
           >
             Github
           </button>
         </div>
       </nav>
 
-      <h1 className="head_text text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl px-2 sm:px-3 md:px-4">
-        Transform Articles into
-        <br className="max-md:hidden" />
-        <span className="orange_gradient"> Smart Summaries</span>
-      </h1>
-      <h2 className="desc text-sm sm:text-base md:text-lg lg:text-xl xl:text-2xl px-2 sm:px-3 md:px-4 max-w-xs sm:max-w-sm md:max-w-2xl lg:max-w-4xl xl:max-w-5xl">
-        Simplify your reading with SumIt, an intelligent article summarizer that
-        turns lengthy articles into clear, concise, and easy-to-digest summaries
-      </h2>
+      {/* Main Text */}
+      <div className="text-center max-w-4xl mx-auto px-2 sm:px-4">
+        <h1 className="font-extrabold leading-[1.15] text-[clamp(1.75rem,5vw,3.5rem)]">
+          Transform Articles into
+          <br className="hidden sm:block" />
+          <span className="orange_gradient block mt-1 sm:mt-2">
+            {" "}
+            Smart Summaries
+          </span>
+        </h1>
+
+        <h2 className="text-gray-600 mt-3 sm:mt-4 text-[clamp(0.875rem,1.75vw,1.25rem)] max-w-2xl mx-auto">
+          Simplify your reading with <strong>SumIt</strong>, an intelligent
+          article summarizer that turns lengthy articles into clear, concise,
+          and easy-to-digest summaries.
+        </h2>
+      </div>
     </header>
   );
 };

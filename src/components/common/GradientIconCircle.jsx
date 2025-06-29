@@ -10,9 +10,13 @@ const GradientIconCircle = ({ icon, variant = "orange", className = "" }) => {
 
   return (
     <div
-      className={`flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 lg:w-16 lg:h-16 xl:w-20 xl:h-20 rounded-full ${gradientClasses[variant]} shadow-lg ${className}`}
+      className={`flex items-center justify-center rounded-full shadow-lg gradient-icon-circle ${gradientClasses[variant]} ${className}`}
+      style={{
+        width: "clamp(2.5rem, 6vw, 5rem)", // roughly 40px - 80px
+        height: "clamp(2.5rem, 6vw, 5rem)",
+      }}
     >
-      {icon}
+      <div className="text-white text-[clamp(1rem,2.5vw,2rem)]">{icon}</div>
     </div>
   );
 };

@@ -1,12 +1,14 @@
 import React from "react";
-import GradientCard from "./common/GradientCard";
 import GradientIconCircle from "./common/GradientIconCircle";
+import GradientCard from "./common/GradientCard";
 import {
   LinkIcon,
   ProcessingIcon,
   ShareIcon,
   LightningIcon,
-  CheckIcon,
+  ArticleIcon,
+  SpeedIcon,
+  ShareAltIcon,
 } from "../constants/icons";
 
 const HowItWorks = () => {
@@ -39,43 +41,44 @@ const HowItWorks = () => {
   };
 
   const features = [
-    { icon: <CheckIcon />, text: "Works with any article" },
-    { icon: <LightningIcon />, text: "Instant summaries" },
-    { icon: <ShareIcon />, text: "Easy sharing" },
+    { icon: <ArticleIcon />, text: "Works with any article" },
+    { icon: <SpeedIcon />, text: "Instant summaries" },
+    { icon: <ShareAltIcon />, text: "Easy sharing" },
   ];
 
   return (
-    <section className="w-full max-w-7xl mx-auto px-2 sm:px-3 md:px-4 lg:px-6 xl:px-8 py-8 sm:py-10 md:py-12 lg:py-16 xl:py-20 bg-gradient-to-b from-white to-gray-50">
+    <section className="w-full max-w-7xl mx-auto px-2 sm:px-4 md:px-6 lg:px-8 py-6 sm:py-8 md:py-10 lg:py-12 bg-gradient-to-b from-white to-gray-50">
       <div className="text-center">
-        <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold text-gray-900">
+        <h2 className="text-[clamp(1.25rem,3.5vw,2.5rem)] font-bold text-gray-900">
           How It <span className="orange_gradient">Works</span>
         </h2>
-        <p className="mt-3 sm:mt-4 md:mt-5 text-sm sm:text-base md:text-lg lg:text-xl xl:text-2xl text-gray-600 max-w-xs sm:max-w-sm md:max-w-2xl lg:max-w-4xl mx-auto px-2 sm:px-3 md:px-4">
+        <p className="mt-2 sm:mt-3 text-[clamp(0.875rem,1.75vw,1rem)] text-gray-600 max-w-xl mx-auto px-2">
           Transform any article into a concise summary in three simple steps
         </p>
       </div>
 
-      <div className="mt-8 sm:mt-10 md:mt-12 lg:mt-16 xl:mt-20">
-        <div className="grid grid-cols-1 gap-4 sm:gap-5 md:gap-6 lg:gap-8 xl:gap-10 sm:grid-cols-2 lg:grid-cols-3">
+      <div className="mt-6 sm:mt-8 md:mt-10">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 md:gap-6">
           {steps.map((step, index) => (
             <GradientCard
               key={step.title}
               variant={index === 0 ? "orange" : index === 1 ? "blue" : "green"}
+              className="h-full"
             >
               <GradientIconCircle
                 icon={step.icon}
-                className="mb-3 sm:mb-4 md:mb-5 lg:mb-6"
+                className="mb-2 sm:mb-3"
                 variant={
                   index === 0 ? "orange" : index === 1 ? "blue" : "green"
                 }
               />
-              <span className="flex items-center justify-center w-5 h-5 sm:w-6 sm:h-6 md:w-7 md:h-7 lg:w-8 lg:h-8 rounded-full bg-orange-100 text-orange-600 text-xs sm:text-sm md:text-base lg:text-lg font-bold mb-2 sm:mb-3 md:mb-4">
+              <span className="flex items-center justify-center w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-orange-100 text-orange-600 text-xs sm:text-sm font-bold mb-2">
                 {index + 1}
               </span>
-              <h3 className="text-base sm:text-lg md:text-xl lg:text-2xl font-bold text-gray-900 mb-2 sm:mb-3 md:mb-4">
+              <h3 className="text-[clamp(0.875rem,1.75vw,1.125rem)] font-bold text-gray-900 mb-1.5 sm:mb-2">
                 {step.title}
               </h3>
-              <p className="text-gray-600 text-center text-xs sm:text-sm md:text-base lg:text-lg">
+              <p className="text-gray-600 text-center text-[clamp(0.75rem,1.5vw,0.875rem)]">
                 {step.description}
               </p>
             </GradientCard>
@@ -83,30 +86,32 @@ const HowItWorks = () => {
         </div>
 
         <GradientCard
-          className="mt-8 sm:mt-10 md:mt-12 lg:mt-16 xl:mt-20"
+          className="mt-6 sm:mt-8 md:mt-10"
           onClick={handleCardClick}
           variant="purple"
         >
           <GradientIconCircle
             icon={<LightningIcon />}
-            className="mb-3 sm:mb-4 md:mb-5 lg:mb-6"
+            className="mb-2 sm:mb-3"
             variant="purple"
           />
-          <h3 className="text-lg sm:text-xl md:text-2xl lg:text-3xl xl:text-4xl font-bold text-gray-900 mb-2 sm:mb-3 md:mb-4">
+          <h3 className="text-[clamp(1rem,2vw,1.5rem)] font-bold text-gray-900 mb-2 text-center">
             Ready to Supercharge Your Reading?
           </h3>
-          <p className="text-gray-600 text-sm sm:text-base md:text-lg lg:text-xl xl:text-2xl max-w-xs sm:max-w-sm md:max-w-2xl lg:max-w-4xl">
+          <p className="text-gray-600 text-[clamp(0.75rem,1.5vw,1rem)] text-center max-w-2xl mx-auto">
             Experience the power of AI-driven article summarization. Simply
             paste your article link above and let our advanced AI do the rest.
             Share your summaries across all major platforms with ease!
           </p>
-          <div className="mt-4 sm:mt-5 md:mt-6 lg:mt-8 flex flex-wrap justify-center gap-2 sm:gap-3 md:gap-4 text-xs sm:text-sm md:text-base text-gray-500">
+          <div className="mt-3 sm:mt-4 flex flex-wrap justify-center gap-2 text-[clamp(0.75rem,1.25vw,0.875rem)] text-gray-500">
             {features.map((feature, index) => (
               <div
                 key={index}
-                className="flex items-center gap-1 sm:gap-1.5 md:gap-2"
+                className="flex items-center gap-1.5 whitespace-nowrap bg-gray-50/80 px-2 sm:px-2.5 py-1 sm:py-1.5 rounded-full"
               >
-                {feature.icon}
+                <span className="w-3.5 h-3.5 sm:w-4 sm:h-4">
+                  {feature.icon}
+                </span>
                 <span>{feature.text}</span>
               </div>
             ))}
