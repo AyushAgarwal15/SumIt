@@ -2,6 +2,10 @@
 
 SumIt is a modern web application that uses AI to transform lengthy articles into clear, concise summaries. Built with React and powered by advanced AI, it helps users quickly grasp the key points of any article.
 
+![image](https://github.com/user-attachments/assets/2c739e28-9c4a-4164-b637-a3503dcbe3c8)
+![image](https://github.com/user-attachments/assets/f293d0af-c43c-4f1f-9e6c-dc59ea515cdf)
+
+
 ## Features
 
 - **Smart Summarization**: Instantly generate concise summaries of any article using advanced AI
