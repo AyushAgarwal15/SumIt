@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { copy, linkIcon, loader, tick } from "../assets";
 
-const Demo = () => {
+const ArticleSummarizer = () => {
   const [article, setArticle] = useState({
     url: "",
     summary: "",
@@ -59,12 +59,10 @@ const Demo = () => {
         let updatedAllArticles;
 
         if (existingArticle) {
-          // Update existing article
           updatedAllArticles = allArticles.map((item) =>
             item.url === article.url ? newArticle : item
           );
         } else {
-          // Add new article
           updatedAllArticles = [newArticle, ...allArticles];
         }
 
@@ -245,4 +243,4 @@ const Demo = () => {
   );
 };
 
-export default Demo;
+export default ArticleSummarizer;
