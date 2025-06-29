@@ -13,7 +13,7 @@ const Hero = () => {
           <img
             src={logo}
             alt="sumit logo"
-            className="object-contain w-[clamp(4rem,10vw,10rem)]"
+            className="object-contain w-24 sm:w-32 h-auto"
           />
         </div>
 

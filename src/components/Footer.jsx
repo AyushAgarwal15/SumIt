@@ -26,7 +26,7 @@ const Footer = () => {
           <img
             src={logo}
             alt="sumit logo"
-            className="w-10 h-auto object-contain"
+            className="w-24 h-auto object-contain"
           />
         </div>
 
@@ -35,7 +35,7 @@ const Footer = () => {
           <p className="text-[clamp(0.75rem,1.75vw,1rem)]">
             Simplify your reading with AI-powered summaries
           </p>
-          <p className="text-[clamp(0.7rem,1.5vw,0.875rem)] mt-1">
+          <p className="text-[clamp(0.7rem,1.5vw,0.875rem)] text-center mt-1">
             © 2025 Ayush Agarwal. All rights reserved.
           </p>
         </div>
