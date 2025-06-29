@@ -1,5 +1,7 @@
 import { useState, useEffect } from "react";
 import { copy, linkIcon, loader, tick } from "../assets";
+import { useLazyGetSummaryQuery } from "../services/article";
+import ReactMarkdown from "react-markdown";
 
 const ArticleSummarizer = () => {
   const [article, setArticle] = useState({
@@ -8,9 +10,10 @@ const ArticleSummarizer = () => {
   });
   const [allArticles, setAllArticles] = useState([]);
   const [copied, setCopied] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
   const [isReSummarizing, setIsReSummarizing] = useState(false);
+
+  const [getSummary, { error: summaryError, isFetching }] =
+    useLazyGetSummaryQuery();
 
   useEffect(() => {
     const articlesFromLocalStorage = JSON.parse(
@@ -23,61 +26,41 @@ const ArticleSummarizer = () => {
   }, []);
 
   const handleSubmit = async (e, forceNew = false) => {
-    e?.preventDefault();
-    setError("");
+    e.preventDefault();
 
     const existingArticle = allArticles.find(
       (item) => item.url === article.url
     );
-
     if (existingArticle && !forceNew) {
       setArticle(existingArticle);
       return;
     }
 
-    setLoading(true);
+    const { data } = await getSummary({ articleUrl: article.url });
 
-    try {
-      const response = await fetch(
-        "https://article-extractor-and-summarizer.p.rapidapi.com/summarize",
-        {
-          method: "POST",
-          headers: {
-            "content-type": "application/json",
-            "X-RapidAPI-Key": import.meta.env.VITE_RAPID_API_ARTICLE_KEY,
-            "X-RapidAPI-Host":
-              "article-extractor-and-summarizer.p.rapidapi.com",
-          },
-          body: JSON.stringify({ url: article.url }),
-        }
-      );
+    if (data?.summary) {
+      const newArticle = {
+        url: forceNew ? article.url : "",
+        summary: data.summary,
+      };
 
-      const data = await response.json();
-
-      if (data.summary) {
-        const newArticle = { ...article, summary: data.summary };
-        let updatedAllArticles;
-
-        if (existingArticle) {
-          updatedAllArticles = allArticles.map((item) =>
-            item.url === article.url ? newArticle : item
-          );
-        } else {
-          updatedAllArticles = [newArticle, ...allArticles];
-        }
-
-        setArticle(newArticle);
+      if (!forceNew) {
+        const updatedAllArticles = [
+          { url: article.url, summary: data.summary },
+          ...allArticles,
+        ];
         setAllArticles(updatedAllArticles);
         localStorage.setItem("articles", JSON.stringify(updatedAllArticles));
       }
-    } catch (err) {
-      setError(
-        "Sorry, there was an error processing your request. Please try again."
-      );
-    } finally {
-      setLoading(false);
+
+      setArticle(newArticle);
       setIsReSummarizing(false);
     }
+  };
+
+  const handleReSummarize = (e) => {
+    setIsReSummarizing(true);
+    handleSubmit(e, true);
   };
 
   const handleCopy = (copyUrl) => {
@@ -105,11 +88,6 @@ const ArticleSummarizer = () => {
   const handleArticleClick = (item) => {
     setArticle(item);
     setIsReSummarizing(false);
-  };
-
-  const handleReSummarize = (e) => {
-    setIsReSummarizing(true);
-    handleSubmit(e, true);
   };
 
   return (
@@ -172,11 +150,11 @@ const ArticleSummarizer = () => {
 
       {/* Display Result */}
       <div className="my-10 max-w-full flex justify-center items-center">
-        {loading ? (
+        {isFetching ? (
           <img src={loader} alt="loader" className="w-20 h-20 object-contain" />
-        ) : error ? (
+        ) : summaryError ? (
           <p className="font-inter font-bold text-black text-center">
-            {error}
+            Sorry, there was an error processing your request.
             <br />
             <span className="font-satoshi font-normal text-gray-700">
               Please try again later.
@@ -189,7 +167,7 @@ const ArticleSummarizer = () => {
                 <h2 className="font-satoshi font-bold text-gray-600 text-xl">
                   Article <span className="blue_gradient">Summary</span>
                 </h2>
-                {!isReSummarizing && (
+                {!isReSummarizing && article.url && (
                   <button
                     onClick={handleReSummarize}
                     className="px-3 py-1.5 text-sm text-blue-500 hover:text-blue-700 transition-colors"
@@ -199,9 +177,9 @@ const ArticleSummarizer = () => {
                 )}
               </div>
               <div className="summary_box">
-                <p className="font-inter font-medium text-sm text-gray-700">
-                  {article.summary}
-                </p>
+                <div className="font-inter font-medium text-sm text-gray-700 prose prose-sm max-w-none">
+                  <ReactMarkdown>{article.summary}</ReactMarkdown>
+                </div>
                 <div className="mt-4 flex gap-2">
                   <button
                     onClick={() => handleCopy(article.summary)}
