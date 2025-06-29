@@ -4,7 +4,7 @@ import { GlobeAltIcon } from "@heroicons/react/24/outline";
 
 const GithubIcon = () => (
   <svg
-    className="w-[clamp(1rem,4vw,1.25rem)] h-[clamp(1rem,4vw,1.25rem)]"
+    className="w-6 h-6"
     fill="currentColor"
     viewBox="0 0 24 24"
     aria-hidden="true"
@@ -26,8 +26,7 @@ const Footer = () => {
           <img
             src={logo}
             alt="sumit logo"
-            style={{ width: "clamp(2rem, 8vw, 5rem)" }}
-            className="h-auto object-contain"
+            className="w-10 h-auto object-contain"
           />
         </div>
 
@@ -59,7 +58,7 @@ const Footer = () => {
             className="text-gray-600 hover:text-gray-900 transition-colors touch-target"
             aria-label="Portfolio Website"
           >
-            <GlobeAltIcon className="w-[clamp(1rem,4vw,1.25rem)] h-[clamp(1rem,4vw,1.25rem)]" />
+            <GlobeAltIcon className="w-6 h-6" />
           </a>
         </div>
       </div>
