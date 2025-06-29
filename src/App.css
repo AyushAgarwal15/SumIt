@@ -20,7 +20,7 @@
 }
 
 .app {
-  @apply relative z-10 flex flex-col max-w-7xl mx-auto sm:px-16 px-6;
+  @apply relative z-10 flex flex-col max-w-7xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8 xl:px-12;
 }
 
 .nav {
@@ -28,15 +28,15 @@
 }
 
 .nav-content {
-  @apply max-w-7xl mx-auto px-6 sm:px-16 py-4 flex justify-between items-center;
+  @apply max-w-7xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8 xl:px-12 py-3 sm:py-4 flex justify-between items-center;
 }
 
 .black_btn {
-  @apply rounded-full border border-black bg-black py-1.5 px-5 text-sm text-white transition-all hover:bg-white hover:text-black;
+  @apply rounded-full border border-black bg-black py-1.5 px-2.5 sm:px-3 md:px-4 lg:px-5 text-xs sm:text-sm md:text-base text-white transition-all hover:bg-white hover:text-black;
 }
 
 .head_text {
-  @apply mt-5 text-5xl font-extrabold leading-[1.15] text-black sm:text-6xl text-center;
+  @apply mt-3 sm:mt-4 md:mt-5 text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-extrabold leading-[1.15] text-black text-center;
 }
 
 .orange_gradient {
@@ -52,27 +52,27 @@
 }
 
 .desc {
-  @apply mt-5 text-lg text-gray-600 sm:text-xl text-center max-w-2xl mx-auto;
+  @apply mt-3 sm:mt-4 md:mt-5 text-sm sm:text-base md:text-lg lg:text-xl text-gray-600 text-center max-w-xs sm:max-w-sm md:max-w-2xl lg:max-w-4xl mx-auto px-2 sm:px-4;
 }
 
 .url_input {
-  @apply block w-full rounded-md border border-gray-200 bg-white py-2.5 pl-10 pr-12 text-sm shadow-lg font-satoshi font-medium focus:border-black focus:outline-none focus:ring-0;
+  @apply block w-full rounded-md border border-gray-200 bg-white py-2 sm:py-2.5 md:py-3 pl-7 sm:pl-8 md:pl-10 pr-10 sm:pr-12 text-sm sm:text-base md:text-lg shadow-lg font-satoshi font-medium focus:border-black focus:outline-none focus:ring-0;
 }
 
 .submit_btn {
-  @apply hover:border-gray-700 hover:text-gray-700 absolute inset-y-0 right-0 my-1.5 mr-1.5 flex w-10 items-center justify-center rounded border border-gray-200 font-sans text-sm font-medium text-gray-400;
+  @apply hover:border-gray-700 hover:text-gray-700 absolute inset-y-0 right-0 my-1.5 mr-1.5 flex w-7 sm:w-8 md:w-10 items-center justify-center rounded border border-gray-200 font-sans text-sm sm:text-base md:text-lg font-medium text-gray-400;
 }
 
 .link_card {
-  @apply p-3 flex justify-start items-center flex-row bg-white border border-gray-200 gap-3 rounded-lg cursor-pointer hover:shadow-md transition-shadow;
+  @apply p-2 sm:p-2.5 md:p-3 flex justify-start items-center flex-row bg-white border border-gray-200 gap-2 sm:gap-2.5 md:gap-3 rounded-lg cursor-pointer hover:shadow-md transition-shadow;
 }
 
 .copy_btn {
-  @apply w-7 h-7 rounded-full bg-white/10 shadow-[inset_10px_-50px_94px_0_rgb(199,199,199,0.2)] backdrop-blur flex justify-center items-center cursor-pointer;
+  @apply w-5 h-5 sm:w-6 sm:h-6 md:w-7 md:h-7 rounded-full bg-white/10 shadow-[inset_10px_-50px_94px_0_rgb(199,199,199,0.2)] backdrop-blur flex justify-center items-center cursor-pointer;
 }
 
 .summary_box {
-  @apply rounded-xl border border-gray-200 bg-white/20 shadow-[inset_10px_-50px_94px_0_rgb(199,199,199,0.2)] backdrop-blur p-4;
+  @apply rounded-xl border border-gray-200 bg-white/20 shadow-[inset_10px_-50px_94px_0_rgb(199,199,199,0.2)] backdrop-blur p-3 sm:p-3.5 md:p-4 lg:p-6;
 }
 
 /* Animations */
@@ -104,8 +104,8 @@
 
 /* Custom scrollbar */
 ::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+  width: 4px;
+  height: 4px;
 }
 
 ::-webkit-scrollbar-track {
@@ -144,47 +144,47 @@
 
 /* Button styles */
 .btn-primary {
-  @apply px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus-ring;
+  @apply px-2.5 sm:px-3 md:px-4 lg:px-5 py-1.5 sm:py-2 md:py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus-ring text-xs sm:text-sm md:text-base;
 }
 
 .btn-secondary {
-  @apply px-4 py-2 bg-gray-100 text-gray-800 rounded-lg hover:bg-gray-200 focus-ring;
+  @apply px-2.5 sm:px-3 md:px-4 lg:px-5 py-1.5 sm:py-2 md:py-2.5 bg-gray-100 text-gray-800 rounded-lg hover:bg-gray-200 focus-ring text-xs sm:text-sm md:text-base;
 }
 
 /* Card styles */
 .card {
-  @apply bg-white rounded-xl shadow-md hover:shadow-lg transition-shadow p-6;
+  @apply bg-white rounded-xl shadow-md hover:shadow-lg transition-shadow p-3 sm:p-4 md:p-5 lg:p-6;
 }
 
 /* Typography */
 .heading-1 {
-  @apply text-4xl font-bold text-gray-900 sm:text-5xl;
+  @apply text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold text-gray-900;
 }
 
 .heading-2 {
-  @apply text-3xl font-bold text-gray-900 sm:text-4xl;
+  @apply text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold text-gray-900;
 }
 
 .body-text {
-  @apply text-base text-gray-600;
+  @apply text-xs sm:text-sm md:text-base lg:text-lg text-gray-600;
 }
 
 /* Layout utilities */
 .container-padding {
-  @apply px-4 sm:px-6 lg:px-8;
+  @apply px-3 sm:px-4 md:px-6 lg:px-8 xl:px-12;
 }
 
 .section-spacing {
-  @apply py-12 sm:py-16 lg:py-20;
+  @apply py-6 sm:py-8 md:py-12 lg:py-16 xl:py-20;
 }
 
 /* Responsive design utilities */
 .responsive-grid {
-  @apply grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3;
+  @apply grid grid-cols-1 gap-3 sm:gap-4 md:gap-6 lg:gap-8 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4;
 }
 
 .responsive-flex {
-  @apply flex flex-col sm:flex-row items-center gap-4;
+  @apply flex flex-col sm:flex-row items-center gap-2 sm:gap-3 md:gap-4 lg:gap-6;
 }
 
 /* Share Panel Styles */
@@ -201,40 +201,39 @@
 }
 
 .share-grid {
-  @apply grid grid-cols-4 gap-4 p-6;
+  @apply grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3 sm:gap-4 p-3 sm:p-4 md:p-6;
 }
 
 .share-item {
-  @apply flex flex-col items-center justify-center gap-2 p-3 rounded-xl hover:bg-gray-50 transition-colors cursor-pointer;
+  @apply flex flex-col items-center gap-1 sm:gap-2 p-2 sm:p-3 rounded-lg hover:bg-gray-50 transition-colors cursor-pointer;
 }
 
 .share-icon {
-  @apply w-12 h-12 rounded-full flex items-center justify-center text-white;
+  @apply w-6 h-6 sm:w-8 sm:h-8 md:w-10 md:h-10;
 }
 
-/* Summary Card Styles */
 .summary-card {
-  @apply bg-white rounded-2xl border border-gray-200 shadow-sm hover:shadow-md transition-shadow overflow-hidden;
+  @apply bg-white rounded-xl shadow-lg p-3 sm:p-4 md:p-5 lg:p-6;
 }
 
 .summary-header {
-  @apply flex items-center justify-between p-4 border-b border-gray-100;
+  @apply flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2 sm:gap-0 mb-3 sm:mb-4;
 }
 
 .summary-content {
-  @apply p-6 space-y-4;
+  @apply text-xs sm:text-sm md:text-base lg:text-lg text-gray-700 leading-relaxed max-w-none;
 }
 
 .summary-text {
-  @apply text-gray-700 leading-relaxed;
+  @apply text-xs sm:text-sm md:text-base lg:text-lg text-gray-700 leading-relaxed;
 }
 
 .summary-actions {
-  @apply flex items-center gap-2 mt-4 pt-4 border-t border-gray-100;
+  @apply flex flex-col sm:flex-row gap-2 sm:gap-3 mt-3 sm:mt-4;
 }
 
 .action-btn {
-  @apply flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors;
+  @apply px-2.5 sm:px-3 md:px-4 lg:px-5 py-1.5 sm:py-2 md:py-2.5 text-xs sm:text-sm md:text-base rounded-lg transition-colors flex items-center justify-center gap-1.5 sm:gap-2;
 }
 
 .primary-btn {
@@ -242,5 +241,40 @@
 }
 
 .secondary-btn {
-  @apply bg-gray-100 text-gray-700 hover:bg-gray-200;
+  @apply bg-gray-100 text-gray-800 hover:bg-gray-200;
+}
+
+/* Mobile-specific optimizations */
+@media (max-width: 640px) {
+  .main {
+    font-size: 14px;
+  }
+
+  .url_input {
+    font-size: 16px; /* Prevents zoom on iOS */
+  }
+
+  .black_btn {
+    min-height: 44px; /* Touch target size */
+  }
+
+  .submit_btn {
+    min-height: 44px;
+  }
+}
+
+/* Tablet optimizations */
+@media (min-width: 641px) and (max-width: 1024px) {
+  .app {
+    padding-left: 2rem;
+    padding-right: 2rem;
+  }
+}
+
+/* Large screen optimizations */
+@media (min-width: 1280px) {
+  .app {
+    padding-left: 3rem;
+    padding-right: 3rem;
+  }
 }

@@ -9,5 +9,18 @@ export default {
       },
     },
   },
-  plugins: [],
+  plugins: [
+    function ({ addUtilities }) {
+      const newUtilities = {
+        ".orange_gradient": {
+          background:
+            "linear-gradient(90deg, #f59e0b 0%, #ea580c 50%, #eab308 100%)",
+          "-webkit-background-clip": "text",
+          "-webkit-text-fill-color": "transparent",
+          "background-clip": "text",
+        },
+      };
+      addUtilities(newUtilities);
+    },
+  ],
 };
