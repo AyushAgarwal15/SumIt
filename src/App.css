@@ -2,6 +2,12 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Base styles */
+:root {
+  --safe-area-top: env(safe-area-inset-top, 0px);
+  --safe-area-bottom: env(safe-area-inset-bottom, 0px);
+}
+
 /* Custom styles */
 .main {
   min-height: 100vh;
@@ -17,28 +23,34 @@
     radial-gradient(at 50% 0%, rgba(59, 130, 246, 0.05) 0, transparent 50%),
     radial-gradient(at 100% 0%, rgba(236, 72, 153, 0.05) 0, transparent 50%);
   overflow-x: hidden;
+  padding-bottom: var(--safe-area-bottom);
 }
 
 .app {
-  @apply relative z-10 flex flex-col max-w-7xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8 xl:px-12;
+  @apply relative z-10 flex flex-col max-w-7xl mx-auto px-2 sm:px-4 md:px-6 lg:px-8;
 }
 
+/* Mobile-first navigation */
 .nav {
   @apply fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-sm border-b border-gray-200;
+  padding-top: var(--safe-area-top);
 }
 
 .nav-content {
-  @apply max-w-7xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8 xl:px-12 py-3 sm:py-4 flex justify-between items-center;
+  @apply max-w-7xl mx-auto px-2 sm:px-4 md:px-6 lg:px-8 py-2 sm:py-3 flex justify-between items-center;
 }
 
+/* Mobile-optimized buttons */
 .black_btn {
-  @apply rounded-full border border-black bg-black py-1.5 px-2.5 sm:px-3 md:px-4 lg:px-5 text-xs sm:text-sm md:text-base text-white transition-all hover:bg-white hover:text-black;
+  @apply rounded-full border border-black bg-black py-1.5 px-2.5 sm:px-3 md:px-4 text-xs sm:text-sm text-white transition-all hover:bg-white hover:text-black touch-manipulation;
 }
 
+/* Responsive typography */
 .head_text {
-  @apply mt-3 sm:mt-4 md:mt-5 text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-extrabold leading-[1.15] text-black text-center;
+  @apply mt-2 sm:mt-3 md:mt-4 text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-extrabold leading-[1.15] text-black text-center;
 }
 
+/* Gradient text effects */
 .orange_gradient {
   @apply bg-gradient-to-r from-amber-500 via-orange-600 to-yellow-500 bg-clip-text text-transparent;
 }
@@ -51,28 +63,176 @@
   @apply bg-gradient-to-r from-blue-600 to-cyan-600 bg-clip-text text-transparent;
 }
 
+/* Responsive description text */
 .desc {
-  @apply mt-3 sm:mt-4 md:mt-5 text-sm sm:text-base md:text-lg lg:text-xl text-gray-600 text-center max-w-xs sm:max-w-sm md:max-w-2xl lg:max-w-4xl mx-auto px-2 sm:px-4;
+  @apply mt-2 sm:mt-3 md:mt-4 text-sm sm:text-base md:text-lg text-gray-600 text-center max-w-xs sm:max-w-sm md:max-w-2xl lg:max-w-4xl mx-auto px-2 sm:px-4;
 }
 
+/* Mobile-optimized input */
 .url_input {
-  @apply block w-full rounded-md border border-gray-200 bg-white py-2 sm:py-2.5 md:py-3 pl-7 sm:pl-8 md:pl-10 pr-10 sm:pr-12 text-sm sm:text-base md:text-lg shadow-lg font-satoshi font-medium focus:border-black focus:outline-none focus:ring-0;
+  @apply block w-full rounded-lg border border-gray-200 bg-white py-2 sm:py-2.5 pl-7 sm:pl-8 pr-8 sm:pr-10 text-sm sm:text-base shadow-lg font-satoshi font-medium focus:border-black focus:outline-none focus:ring-0;
+  font-size: 16px !important; /* Prevent iOS zoom */
 }
 
+/* Mobile-optimized submit button */
 .submit_btn {
-  @apply hover:border-gray-700 hover:text-gray-700 absolute inset-y-0 right-0 my-1.5 mr-1.5 flex w-7 sm:w-8 md:w-10 items-center justify-center rounded border border-gray-200 font-sans text-sm sm:text-base md:text-lg font-medium text-gray-400;
+  @apply hover:border-gray-700 hover:text-gray-700 absolute inset-y-0 right-0 my-1.5 mr-1.5 flex w-6 sm:w-7 items-center justify-center rounded border border-gray-200 font-sans text-sm sm:text-base font-medium text-gray-400 touch-manipulation;
 }
 
+/* Mobile-optimized link card */
 .link_card {
-  @apply p-2 sm:p-2.5 md:p-3 flex justify-start items-center flex-row bg-white border border-gray-200 gap-2 sm:gap-2.5 md:gap-3 rounded-lg cursor-pointer hover:shadow-md transition-shadow;
+  @apply p-2 sm:p-2.5 flex justify-between items-center flex-row bg-white border border-gray-200 rounded-lg hover:shadow-md transition-shadow touch-manipulation;
 }
 
+/* Mobile-optimized copy button */
 .copy_btn {
-  @apply w-5 h-5 sm:w-6 sm:h-6 md:w-7 md:h-7 rounded-full bg-white/10 shadow-[inset_10px_-50px_94px_0_rgb(199,199,199,0.2)] backdrop-blur flex justify-center items-center cursor-pointer;
+  @apply w-4 h-4 sm:w-5 sm:h-5 rounded-full bg-white/10 shadow-[inset_10px_-50px_94px_0_rgb(199,199,199,0.2)] backdrop-blur flex justify-center items-center cursor-pointer touch-manipulation;
 }
 
+/* Mobile-optimized summary box */
 .summary_box {
-  @apply rounded-xl border border-gray-200 bg-white/20 shadow-[inset_10px_-50px_94px_0_rgb(199,199,199,0.2)] backdrop-blur p-3 sm:p-3.5 md:p-4 lg:p-6;
+  @apply rounded-xl border border-gray-200 bg-white/20 shadow-[inset_10px_-50px_94px_0_rgb(199,199,199,0.2)] backdrop-blur p-2.5 sm:p-3 md:p-4;
+}
+
+/* Mobile-optimized button styles */
+.btn-primary {
+  @apply w-full sm:w-auto px-3 sm:px-4 md:px-5 py-2 sm:py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus-ring text-xs sm:text-sm md:text-base touch-manipulation;
+}
+
+.btn-secondary {
+  @apply w-full sm:w-auto px-3 sm:px-4 md:px-5 py-2 sm:py-2.5 bg-gray-100 text-gray-800 rounded-lg hover:bg-gray-200 focus-ring text-xs sm:text-sm md:text-base touch-manipulation;
+}
+
+/* Mobile-optimized card */
+.card {
+  @apply bg-white rounded-xl shadow-md hover:shadow-lg transition-shadow p-3 sm:p-4 md:p-5 lg:p-6 touch-manipulation;
+}
+
+/* Mobile-optimized typography */
+.heading-1 {
+  @apply text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold text-gray-900;
+}
+
+.heading-2 {
+  @apply text-base sm:text-lg md:text-xl lg:text-2xl font-bold text-gray-900;
+}
+
+.body-text {
+  @apply text-xs sm:text-sm md:text-base text-gray-600;
+}
+
+/* Mobile-optimized layout utilities */
+.container-padding {
+  @apply px-2 sm:px-4 md:px-6 lg:px-8;
+}
+
+.section-spacing {
+  @apply py-4 sm:py-6 md:py-8 lg:py-10;
+}
+
+/* Mobile-optimized grid and flex layouts */
+.responsive-grid {
+  @apply grid grid-cols-1 gap-2 sm:gap-3 md:gap-4 sm:grid-cols-2 lg:grid-cols-3;
+}
+
+.responsive-flex {
+  @apply flex flex-col sm:flex-row items-center gap-2 sm:gap-3;
+}
+
+/* Mobile-optimized share panel */
+.share-panel {
+  @apply fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 transform transition-transform duration-300 ease-in-out z-50 rounded-t-2xl shadow-2xl px-2 sm:px-4 py-3 sm:py-4;
+}
+
+/* Mobile touch optimization */
+.touch-target {
+  @apply min-h-[44px] min-w-[44px] flex items-center justify-center touch-manipulation;
+}
+
+/* Mobile-optimized focus styles */
+.focus-ring {
+  @apply focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1 focus:ring-offset-white;
+}
+
+/* Mobile-optimized scrollbar */
+@media (max-width: 640px) {
+  ::-webkit-scrollbar {
+    width: 2px;
+    height: 2px;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    border-radius: 2px;
+  }
+
+  .url_input {
+    font-size: 16px !important; /* Prevent iOS zoom */
+  }
+
+  .link_card {
+    padding: 0.5rem;
+  }
+
+  .summary_box {
+    padding: 0.75rem;
+  }
+
+  /* Increase touch target size for delete button */
+  .link_card button {
+    @apply p-2;
+  }
+
+  /* Add active state for mobile */
+  .link_card button:active {
+    @apply bg-gray-100 rounded-full;
+  }
+
+  /* Ensure proper spacing in link card */
+  .link_card {
+    @apply gap-1;
+  }
+
+  /* Handle tooltip on mobile */
+  .link_card .group\/tooltip:active > div[class*="absolute"] {
+    @apply opacity-100 visible;
+    top: auto;
+    bottom: -3rem;
+  }
+
+  /* Ensure tooltip doesn't get cut off */
+  .link_card {
+    @apply relative;
+  }
+}
+
+/* Tablet optimizations */
+@media (min-width: 641px) and (max-width: 1024px) {
+  ::-webkit-scrollbar {
+    width: 3px;
+    height: 3px;
+  }
+}
+
+/* Desktop optimizations */
+@media (min-width: 1025px) {
+  .app {
+    padding-left: max(1rem, calc((100vw - 1280px) / 2));
+    padding-right: max(1rem, calc((100vw - 1280px) / 2));
+  }
+}
+
+/* Prevent text selection on interactive elements */
+.no-select {
+  @apply select-none;
+}
+
+/* Safe area insets for modern mobile browsers */
+.safe-bottom {
+  padding-bottom: var(--safe-area-bottom);
+}
+
+.safe-top {
+  padding-top: var(--safe-area-top);
 }
 
 /* Animations */
@@ -135,20 +295,6 @@
 
 .animate-pulse {
   animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-}
-
-/* Focus styles */
-.focus-ring {
-  @apply focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2;
-}
-
-/* Button styles */
-.btn-primary {
-  @apply px-2.5 sm:px-3 md:px-4 lg:px-5 py-1.5 sm:py-2 md:py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus-ring text-xs sm:text-sm md:text-base;
-}
-
-.btn-secondary {
-  @apply px-2.5 sm:px-3 md:px-4 lg:px-5 py-1.5 sm:py-2 md:py-2.5 bg-gray-100 text-gray-800 rounded-lg hover:bg-gray-200 focus-ring text-xs sm:text-sm md:text-base;
 }
 
 /* Card styles */
@@ -277,4 +423,57 @@
     padding-left: 3rem;
     padding-right: 3rem;
   }
+}
+
+/* Icon animations */
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-5px);
+  }
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Apply animations to different elements */
+.logo-container img {
+  animation: float 3s ease-in-out infinite;
+}
+
+.copy_btn img {
+  animation: pulse 2s ease-in-out infinite;
+}
+
+.link_card svg {
+  animation: pulse 2s ease-in-out infinite;
+}
+
+/* Processing icon specific animation */
+.processing-icon {
+  animation: spin 2s linear infinite;
+}
+
+/* Gradient icon circle animations */
+.gradient-icon-circle {
+  animation: float 3s ease-in-out infinite;
 }
