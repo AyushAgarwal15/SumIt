@@ -20,7 +20,7 @@ const Hero = () => {
         <div className="flex gap-2">
           <button
             type="button"
-            onClick={() => window.open("https://ayushagarwal.vercel.app/")}
+            onClick={() => window.open("https://ayushagarwal.info/")}
             className="black_btn text-xs sm:text-sm md:text-base px-2 sm:px-3 md:px-4 py-1.5 sm:py-2"
           >
             Portfolio

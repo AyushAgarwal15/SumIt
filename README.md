@@ -96,4 +96,4 @@ SumIt is a modern web application that uses AI to transform lengthy articles int
 
 ## Contact
 
-Ayush Agarwal - [Portfolio](https://ayushagarwal.vercel.app/)
+Ayush Agarwal - [Portfolio](https://ayushagarwal.info/)
