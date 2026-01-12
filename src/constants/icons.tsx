@@ -8,6 +8,8 @@ import {
   ClockIcon,
   ShareIcon as HeroShareAltIcon,
   TrashIcon,
+  SpeakerWaveIcon,
+  StopIcon as HeroStopIcon,
 } from "@heroicons/react/24/outline";
 
 export const LinkIcon = () => (
@@ -44,3 +46,7 @@ export const ShareAltIcon = () => (
 );
 
 export const DeleteIcon = () => <TrashIcon className="w-4 h-4" />;
+
+export const SpeakerIcon = () => <SpeakerWaveIcon className="w-3 h-3 sm:w-3.5 sm:h-3.5" />;
+
+export const StopIcon = () => <HeroStopIcon className="w-3 h-3 sm:w-3.5 sm:h-3.5" />;

@@ -1,8 +1,11 @@
 import { useState, useEffect } from "react";
-import { copy, linkIcon, loader, tick } from "../assets";
+import { copy, linkIcon, tick } from "../assets";
 import { useLazyGetSummaryQuery } from "../services/article";
 import ReactMarkdown from "react-markdown";
-import { DeleteIcon } from "../constants/icons";
+import { DeleteIcon, SpeakerIcon, StopIcon } from "../constants/icons";
+import { motion, AnimatePresence } from "framer-motion";
+import SkeletonLoader from "./common/SkeletonLoader";
+import { toast } from "react-toastify";
 
 interface Article {
   url: string;
@@ -17,6 +20,10 @@ const ArticleSummarizer = () => {
   const [allArticles, setAllArticles] = useState<Article[]>([]);
   const [copied, setCopied] = useState<string | boolean>("");
   const [isReSummarizing, setIsReSummarizing] = useState<boolean>(false);
+  const [isSpeaking, setIsSpeaking] = useState<boolean>(false);
+  const synth = typeof window !== "undefined" ? window.speechSynthesis : null;
+
+  const [voice, setVoice] = useState<SpeechSynthesisVoice | null>(null);
 
   const [getSummary, { error: summaryError, isFetching }] =
     useLazyGetSummaryQuery();
@@ -30,6 +37,33 @@ const ArticleSummarizer = () => {
       setAllArticles(articlesFromLocalStorage);
     }
   }, []);
+
+  useEffect(() => {
+    const loadVoices = () => {
+      const availableVoices = synth?.getVoices() || [];
+      // Priority list: Google US English > Microsoft Zira > Samantha > First available
+      const preferredVoice = availableVoices.find(
+        (v) =>
+          v.name.includes("Google US English") ||
+          v.name.includes("Microsoft Zira") ||
+          v.name.includes("Samantha")
+      );
+      setVoice(preferredVoice || availableVoices[0]);
+    };
+
+    if (synth) {
+      loadVoices();
+      if (synth.onvoiceschanged !== undefined) {
+        synth.onvoiceschanged = loadVoices;
+      }
+    }
+  }, [synth]);
+
+  useEffect(() => {
+    if (summaryError) {
+      toast.error("Failed to fetch summary. Please try again.");
+    }
+  }, [summaryError]);
 
   const handleSubmit = async (e: React.FormEvent, forceNew: boolean = false) => {
     e.preventDefault();
@@ -76,6 +110,7 @@ const ArticleSummarizer = () => {
   const handleCopy = (copyUrl: string) => {
     setCopied(copyUrl);
     navigator.clipboard.writeText(copyUrl);
+    toast.success("Copied to clipboard!");
     setTimeout(() => setCopied(false), 3000);
   };
 
@@ -92,8 +127,46 @@ const ArticleSummarizer = () => {
       }
     } catch (err) {
       console.log("Error sharing:", err);
+      toast.error("Sharing failed.");
     }
   };
+
+  const handleSpeak = () => {
+    if (!article.summary || !synth) return;
+
+    if (isSpeaking) {
+      synth.cancel();
+      setIsSpeaking(false);
+      return;
+    }
+
+    const utterance = new SpeechSynthesisUtterance(article.summary);
+    if (voice) {
+      utterance.voice = voice;
+    }
+    
+    utterance.onend = () => setIsSpeaking(false);
+    utterance.onerror = (event) => {
+      setIsSpeaking(false);
+      // Only show error if it wasn't a manual interruption
+      if (event.error !== 'interrupted' && event.error !== 'canceled') {
+        toast.error("An error occurred while speaking.");
+      }
+    };
+    
+    synth.cancel(); // Cancel any current speech
+    synth.speak(utterance);
+    setIsSpeaking(true);
+  };
+
+  // Stop speaking when component unmounts
+  useEffect(() => {
+    return () => {
+      if (synth) {
+        synth.cancel();
+      }
+    };
+  }, [synth]);
 
   const handleArticleClick = (item: Article) => {
     setArticle(item);
@@ -116,7 +189,10 @@ const ArticleSummarizer = () => {
   return (
     <section className="mt-3 sm:mt-4 md:mt-6 lg:mt-8 w-full max-w-xl mx-auto px-2 sm:px-3 md:px-4">
       <div className="flex flex-col w-full gap-1.5">
-        <form
+        <motion.form
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
           className="relative flex justify-center items-center"
           onSubmit={handleSubmit}
         >
@@ -134,62 +210,70 @@ const ArticleSummarizer = () => {
             required
             className="url_input text-sm sm:text-base pl-7 sm:pl-8 pr-8 sm:pr-10"
           />
-          <button type="submit" className="submit_btn">
+          <button type="submit" className="submit_btn hover:border-black hover:text-black transition-colors">
             <p className="text-sm sm:text-base">↵</p>
           </button>
-        </form>
+        </motion.form>
 
         {/* Browse History */}
         <div className="flex flex-col gap-1 max-h-24 sm:max-h-32 md:max-h-40 overflow-y-auto">
-          {allArticles.map((item, index) => (
-            <div key={`link-${index}`} className="link_card group">
-              <div
-                className="flex-1 flex items-center gap-2 cursor-pointer overflow-hidden"
-                onClick={() => handleArticleClick(item)}
+          <AnimatePresence>
+            {allArticles.map((item, index) => (
+              <motion.div
+                key={`link-${index}`}
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, height: 0 }}
+                transition={{ duration: 0.3, delay: index * 0.1 }}
+                layout
+                className="link_card group"
               >
                 <div
-                  className="copy_btn shrink-0"
+                  className="flex-1 flex items-center gap-2 cursor-pointer overflow-hidden"
+                  onClick={() => handleArticleClick(item)}
+                >
+                  <div
+                    className="copy_btn shrink-0"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleCopy(item.url);
+                    }}
+                  >
+                    <img
+                      src={copied === item.url ? tick : copy}
+                      alt={copied === item.url ? "tick_icon" : "copy_icon"}
+                      className="w-[40%] h-[40%] object-contain"
+                    />
+                  </div>
+                  <p
+                    className="font-satoshi text-blue-700 font-medium text-xs sm:text-sm truncate"
+                    title={item.url}
+                  >
+                    {item.url}
+                  </p>
+                </div>
+                <button
                   onClick={(e) => {
                     e.stopPropagation();
-                    handleCopy(item.url);
+                    handleDelete(item.url);
                   }}
+                  className="text-gray-400 hover:text-red-500 transition-colors px-2 shrink-0 flex items-center"
+                  aria-label="Delete article"
                 >
-                  <img
-                    src={copied === item.url ? tick : copy}
-                    alt={copied === item.url ? "tick_icon" : "copy_icon"}
-                    className="w-[40%] h-[40%] object-contain"
-                  />
-                </div>
-                <p
-                  className="font-satoshi text-blue-700 font-medium text-xs sm:text-sm truncate"
-                  title={item.url}
-                >
-                  {item.url}
-                </p>
-              </div>
-              <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  handleDelete(item.url);
-                }}
-                className="text-gray-400 hover:text-red-500 transition-colors px-2 shrink-0 flex items-center"
-                aria-label="Delete article"
-              >
-                <DeleteIcon />
-              </button>
-            </div>
-          ))}
+                  <DeleteIcon />
+                </button>
+              </motion.div>
+            ))}
+          </AnimatePresence>
         </div>
       </div>
 
       {/* Display Result */}
       <div className="my-4 sm:my-6 md:my-8 max-w-full flex justify-center items-center">
         {isFetching ? (
-          <img
-            src={loader}
-            alt="loader"
-            className="w-8 h-8 sm:w-10 sm:h-10 object-contain"
-          />
+          <div className="w-full max-w-2xl">
+            <SkeletonLoader />
+          </div>
         ) : summaryError ? (
           <p className="font-inter font-bold text-black text-center text-xs sm:text-sm px-2">
             Sorry, there was an error processing your request.
@@ -200,7 +284,12 @@ const ArticleSummarizer = () => {
           </p>
         ) : (
           article.summary && (
-            <div className="flex flex-col gap-2 w-full">
+            <motion.div 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5 }}
+              className="flex flex-col gap-2 w-full"
+            >
               <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-1.5 sm:gap-2">
                 <h2 className="font-satoshi font-bold text-gray-600 text-sm sm:text-base md:text-lg">
                   Article <span className="blue_gradient">Summary</span>
@@ -231,6 +320,26 @@ const ArticleSummarizer = () => {
                     {copied === article.summary ? "Copied!" : "Copy"}
                   </button>
                   <button
+                    onClick={handleSpeak}
+                    className={`w-full sm:w-auto px-3 py-1.5 sm:py-2 rounded-lg text-xs sm:text-sm transition-colors flex items-center justify-center gap-1.5 ${
+                      isSpeaking
+                        ? "bg-red-500 text-white hover:bg-red-600"
+                        : "bg-white border border-gray-300 text-gray-700 hover:bg-gray-50"
+                    }`}
+                  >
+                    {isSpeaking ? (
+                      <>
+                        <StopIcon />
+                        Stop
+                      </>
+                    ) : (
+                      <>
+                        <SpeakerIcon />
+                        Listen
+                      </>
+                    )}
+                  </button>
+                  <button
                     onClick={handleShare}
                     className="w-full sm:w-auto px-3 py-1.5 sm:py-2 bg-blue-500 text-white rounded-lg text-xs sm:text-sm hover:bg-blue-600 transition-colors flex items-center justify-center gap-1.5"
                   >
@@ -238,7 +347,7 @@ const ArticleSummarizer = () => {
                   </button>
                 </div>
               </div>
-            </div>
+            </motion.div>
           )
         )}
       </div>

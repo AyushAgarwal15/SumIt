@@ -2,6 +2,8 @@ import Hero from "@/components/Hero";
 import ArticleSummarizer from "@/components/ArticleSummarizer";
 import HowItWorks from "@/components/HowItWorks";
 import Footer from "@/components/Footer";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import "./App.css";
 
 const App = () => {
@@ -12,6 +14,7 @@ const App = () => {
         <ArticleSummarizer />
         <HowItWorks />
         <Footer />
+        <ToastContainer position="bottom-right" theme="dark" />
       </div>
     </main>
   );

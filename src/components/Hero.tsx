@@ -1,4 +1,5 @@
 import { logo } from "../assets";
+import { motion } from "framer-motion";
 
 const Hero = () => {
   return (
@@ -8,19 +9,29 @@ const Hero = () => {
     >
       {/* Navbar */}
       <nav className="flex justify-between items-center w-full max-w-7xl mb-4 sm:mb-6 md:mb-8">
-        <div className="logo-container">
+        <motion.div 
+          initial={{ opacity: 0, x: -20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.5 }}
+          className="logo-container"
+        >
           <img
             src={logo}
             alt="sumit logo"
             className="object-contain w-24 sm:w-32 h-auto"
           />
-        </div>
+        </motion.div>
 
-        <div className="flex gap-2">
+        <motion.div 
+          initial={{ opacity: 0, x: 20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.5 }}
+          className="flex gap-2"
+        >
           <button
             type="button"
             onClick={() => window.open("https://ayushagarwal.info/")}
-            className="black_btn text-xs sm:text-sm md:text-base px-2 sm:px-3 md:px-4 py-1.5 sm:py-2"
+            className="black_btn text-xs sm:text-sm md:text-base px-2 sm:px-3 md:px-4 py-1.5 sm:py-2 hover:scale-105 transition-transform"
           >
             Portfolio
           </button>
@@ -29,29 +40,39 @@ const Hero = () => {
             onClick={() =>
               window.open("https://github.com/AyushAgarwal15/AI_Summarizer")
             }
-            className="black_btn text-xs sm:text-sm md:text-base px-2 sm:px-3 md:px-4 py-1.5 sm:py-2"
+            className="black_btn text-xs sm:text-sm md:text-base px-2 sm:px-3 md:px-4 py-1.5 sm:py-2 hover:scale-105 transition-transform"
           >
             Github
           </button>
-        </div>
+        </motion.div>
       </nav>
 
       {/* Main Text */}
       <div className="text-center max-w-4xl mx-auto px-2 sm:px-4">
-        <h1 className="font-extrabold leading-[1.15] text-[clamp(1.75rem,5vw,3.5rem)]">
+        <motion.h1 
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 0.2 }}
+          className="font-extrabold leading-[1.15] text-[clamp(1.75rem,5vw,3.5rem)]"
+        >
           Transform Articles into
           <br className="hidden sm:block" />
           <span className="orange_gradient block mt-1 sm:mt-2">
             {" "}
             Smart Summaries
           </span>
-        </h1>
+        </motion.h1>
 
-        <h2 className="text-gray-600 mt-3 sm:mt-4 text-[clamp(0.875rem,1.75vw,1.25rem)] max-w-2xl mx-auto">
+        <motion.h2 
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 0.4 }}
+          className="text-gray-600 mt-3 sm:mt-4 text-[clamp(0.875rem,1.75vw,1.25rem)] max-w-2xl mx-auto"
+        >
           Simplify your reading with <strong>SumIt</strong>, an intelligent
           article summarizer that turns lengthy articles into clear, concise,
           and easy-to-digest summaries.
-        </h2>
+        </motion.h2>
       </div>
     </header>
   );
