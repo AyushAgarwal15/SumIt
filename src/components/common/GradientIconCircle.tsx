@@ -1,6 +1,14 @@
-import React from "react";
+interface GradientIconCircleProps {
+  icon: React.ReactNode;
+  variant?: "orange" | "blue" | "green" | "purple";
+  className?: string;
+}
 
-const GradientIconCircle = ({ icon, variant = "orange", className = "" }) => {
+const GradientIconCircle: React.FC<GradientIconCircleProps> = ({
+  icon,
+  variant = "orange",
+  className = "",
+}) => {
   const gradientClasses = {
     orange: "bg-gradient-to-r from-amber-500 via-orange-600 to-yellow-500",
     blue: "bg-gradient-to-r from-blue-500 via-indigo-600 to-purple-500",

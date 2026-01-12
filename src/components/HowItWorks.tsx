@@ -1,4 +1,3 @@
-import React from "react";
 import GradientIconCircle from "./common/GradientIconCircle";
 import GradientCard from "./common/GradientCard";
 import {

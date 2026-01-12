@@ -4,21 +4,26 @@ import { useLazyGetSummaryQuery } from "../services/article";
 import ReactMarkdown from "react-markdown";
 import { DeleteIcon } from "../constants/icons";
 
+interface Article {
+  url: string;
+  summary: string;
+}
+
 const ArticleSummarizer = () => {
-  const [article, setArticle] = useState({
+  const [article, setArticle] = useState<Article>({
     url: "",
     summary: "",
   });
-  const [allArticles, setAllArticles] = useState([]);
-  const [copied, setCopied] = useState("");
-  const [isReSummarizing, setIsReSummarizing] = useState(false);
+  const [allArticles, setAllArticles] = useState<Article[]>([]);
+  const [copied, setCopied] = useState<string | boolean>("");
+  const [isReSummarizing, setIsReSummarizing] = useState<boolean>(false);
 
   const [getSummary, { error: summaryError, isFetching }] =
     useLazyGetSummaryQuery();
 
   useEffect(() => {
     const articlesFromLocalStorage = JSON.parse(
-      localStorage.getItem("articles")
+      localStorage.getItem("articles") || "null"
     );
 
     if (articlesFromLocalStorage) {
@@ -26,7 +31,7 @@ const ArticleSummarizer = () => {
     }
   }, []);
 
-  const handleSubmit = async (e, forceNew = false) => {
+  const handleSubmit = async (e: React.FormEvent, forceNew: boolean = false) => {
     e.preventDefault();
 
     const existingArticle = allArticles.find(
@@ -59,12 +64,16 @@ const ArticleSummarizer = () => {
     }
   };
 
-  const handleReSummarize = (e) => {
+  const handleReSummarize = (e: React.MouseEvent) => {
     setIsReSummarizing(true);
-    handleSubmit(e, true);
+    // Cast to FormEvent because handleSubmit expects it, though we're calling it from a button click here.
+    // Ideally handleSubmit should accept SyntheticEvent or we wrap it.
+    // For simplicity calling it as is, but we need to match the signature.
+    // Actually handleSubmit calls e.preventDefault(), so we need a compatible event.
+    handleSubmit(e as unknown as React.FormEvent, true);
   };
 
-  const handleCopy = (copyUrl) => {
+  const handleCopy = (copyUrl: string) => {
     setCopied(copyUrl);
     navigator.clipboard.writeText(copyUrl);
     setTimeout(() => setCopied(false), 3000);
@@ -86,12 +95,12 @@ const ArticleSummarizer = () => {
     }
   };
 
-  const handleArticleClick = (item) => {
+  const handleArticleClick = (item: Article) => {
     setArticle(item);
     setIsReSummarizing(false);
   };
 
-  const handleDelete = (urlToDelete) => {
+  const handleDelete = (urlToDelete: string) => {
     const updatedArticles = allArticles.filter(
       (item) => item.url !== urlToDelete
     );

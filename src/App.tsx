@@ -1,7 +1,7 @@
-import Hero from "./components/Hero";
-import ArticleSummarizer from "./components/ArticleSummarizer";
-import HowItWorks from "./components/HowItWorks";
-import Footer from "./components/Footer";
+import Hero from "@/components/Hero";
+import ArticleSummarizer from "@/components/ArticleSummarizer";
+import HowItWorks from "@/components/HowItWorks";
+import Footer from "@/components/Footer";
 import "./App.css";
 
 const App = () => {

@@ -1,6 +1,11 @@
-import React from "react";
+interface GradientCardProps {
+  children: React.ReactNode;
+  onClick?: () => void;
+  className?: string;
+  variant?: "orange" | "blue" | "green" | "purple";
+}
 
-const GradientCard = ({
+const GradientCard: React.FC<GradientCardProps> = ({
   children,
   onClick,
   className = "",
@@ -15,7 +20,9 @@ const GradientCard = ({
 
   return (
     <div
-      className={`relative group cursor-pointer w-full max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg xl:max-w-xl mx-auto ${className}`}
+      className={`relative group ${
+        onClick ? "cursor-pointer" : ""
+      } w-full max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg xl:max-w-xl mx-auto ${className}`}
       onClick={onClick}
     >
       <div
