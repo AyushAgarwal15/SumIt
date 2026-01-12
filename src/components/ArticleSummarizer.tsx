@@ -8,6 +8,7 @@ import SkeletonLoader from "./common/SkeletonLoader";
 import { toast } from "react-toastify";
 import { extractTextFromPDF } from "../utils/pdfUtils";
 import { useSummarizeTextMutation } from "../services/article";
+import { languages } from "../constants/languages";
 
 interface Article {
   url: string;
@@ -20,6 +21,7 @@ const ArticleSummarizer = () => {
     summary: "",
   });
   const [allArticles, setAllArticles] = useState<Article[]>([]);
+  const [articleContent, setArticleContent] = useState<string>(""); // Store original text for re-summarization
   const [copied, setCopied] = useState<string | boolean>("");
   const [isReSummarizing, setIsReSummarizing] = useState<boolean>(false);
   const [isSpeaking, setIsSpeaking] = useState<boolean>(false);
@@ -27,6 +29,7 @@ const ArticleSummarizer = () => {
 
   const [voice, setVoice] = useState<SpeechSynthesisVoice | null>(null);
   const [isExtracting, setIsExtracting] = useState<boolean>(false);
+  const [lang, setLang] = useState<string>("en");
 
   const [getSummary, { error: summaryError, isFetching }] =
     useLazyGetSummaryQuery();
@@ -71,8 +74,36 @@ const ArticleSummarizer = () => {
     }
   }, [summaryError]);
 
+  // Auto-summarize when language changes if we have a URL
+  // We handle this via handleLanguageChange now
+  
+  const handleLanguageChange = async (newLang: string) => {
+    setLang(newLang);
+    
+    // If we have original content (from PDF/TXT), use summarizeText
+    if (articleContent) {
+        const result = await summarizeText({ text: articleContent, lang: newLang });
+        if ("data" in result && result.data?.summary) {
+            setArticle({ ...article, summary: result.data.summary });
+        }
+        return;
+    }
+
+    // Otherwise, if it's a URL, use getSummary
+    if (article.url) {
+       // Force re-fetch with new language
+       const { data } = await getSummary({ articleUrl: article.url, lang: newLang });
+       if (data?.summary) {
+         setArticle({ ...article, summary: data.summary });
+       }
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent, forceNew: boolean = false) => {
     e.preventDefault();
+    
+    // Reset article content as we are fetching from URL
+    setArticleContent("");
 
     const existingArticle = allArticles.find(
       (item) => item.url === article.url
@@ -82,7 +113,7 @@ const ArticleSummarizer = () => {
       return;
     }
 
-    const { data } = await getSummary({ articleUrl: article.url });
+    const { data } = await getSummary({ articleUrl: article.url, lang });
 
     if (data?.summary) {
       const newArticle = {
@@ -147,16 +178,27 @@ const ArticleSummarizer = () => {
     }
 
     const utterance = new SpeechSynthesisUtterance(article.summary);
-    if (voice) {
-      utterance.voice = voice;
-    }
     
+    // Set the language for the utterance to match selected language or auto-detect
+    if (lang) {
+        utterance.lang = lang;
+        // Try to find a voice that matches the language
+        const languageVoices = synth.getVoices().filter(v => v.lang.startsWith(lang));
+        if (languageVoices.length > 0) {
+             // Prefer Google or Microsoft voices if available for that language
+             const preferred = languageVoices.find(v => v.name.includes("Google") || v.name.includes("Microsoft"));
+             utterance.voice = preferred || languageVoices[0];
+        }
+    } else if (voice) {
+       utterance.voice = voice;
+    }
+
     utterance.onend = () => setIsSpeaking(false);
     utterance.onerror = (event) => {
       setIsSpeaking(false);
       // Only show error if it wasn't a manual interruption
       if (event.error !== 'interrupted' && event.error !== 'canceled') {
-        toast.error("An error occurred while speaking.");
+        toast.error("An error occurred while speaking: " + event.error);
       }
     };
     
@@ -216,22 +258,28 @@ const ArticleSummarizer = () => {
         return;
       }
 
-      const result = await summarizeText({ text });
+      setArticleContent(text); // Save extracted text
+
+      const result = await summarizeText({ text, lang });
       
-      if ("data" in result && result.data?.summary) {
+      if ("data" in result) {
         const data = result.data;
-        const newArticle = {
-          url: file.name, // Use filename as "url" identifier
-          summary: data.summary,
-        };
-        
-        // Add to history
-        const updatedAllArticles = [newArticle, ...allArticles];
-        setAllArticles(updatedAllArticles);
-        localStorage.setItem("articles", JSON.stringify(updatedAllArticles));
-        
-        setArticle(newArticle);
-        setIsReSummarizing(false);
+        if (data?.summary) {
+          const newArticle = {
+            url: file.name, // Use filename as "url" identifier
+            summary: data.summary,
+          };
+          
+          // Add to history
+          const updatedAllArticles = [newArticle, ...allArticles];
+          setAllArticles(updatedAllArticles);
+          localStorage.setItem("articles", JSON.stringify(updatedAllArticles));
+          
+          setArticle(newArticle);
+          setIsReSummarizing(false);
+        } else {
+             toast.error("Failed to generate summary from file.");
+        }
       } else {
         toast.error("Failed to generate summary from file.");
       }
@@ -267,12 +315,17 @@ const ArticleSummarizer = () => {
             value={article.url}
             onChange={(e) => setArticle({ ...article, url: e.target.value })}
             required
-            className="url_input text-sm sm:text-base pl-7 sm:pl-8 pr-8 sm:pr-10"
+            className="url_input peer text-sm sm:text-base pl-7 sm:pl-8 pr-8 sm:pr-10"
           />
-          <button type="submit" className="submit_btn hover:border-black hover:text-black transition-colors">
+          <button type="submit" className="submit_btn peer-focus:border-black peer-focus:text-black hover:border-black hover:text-black transition-colors">
             <p className="text-sm sm:text-base">↵</p>
           </button>
+
+          {/* Language Selector */}
+
         </motion.form>
+
+
 
         <motion.div 
           initial={{ opacity: 0 }}
@@ -283,7 +336,7 @@ const ArticleSummarizer = () => {
           <label className="flex items-center gap-2 cursor-pointer bg-white border border-dashed border-gray-300 rounded-lg px-4 py-2 hover:bg-gray-50 transition-colors w-full justify-center group">
              <UploadIcon />
              <span className="text-sm text-gray-500 group-hover:text-gray-700 font-satoshi">
-               {isExtracting ? "Extracting..." : "Upload PDF or TXT"}
+               {isExtracting ? "Extracting..." : "Upload PDF or TXT to Summarize & Translate"}
              </span>
              <input 
                type="file" 
@@ -371,17 +424,33 @@ const ArticleSummarizer = () => {
               className="flex flex-col gap-2 w-full"
             >
               <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-1.5 sm:gap-2">
-                <h2 className="font-satoshi font-bold text-gray-600 text-sm sm:text-base md:text-lg">
+                <h2 className="font-satoshi font-bold text-gray-600 text-sm sm:text-base md:text-lg flex items-center gap-2">
                   Article <span className="blue_gradient">Summary</span>
                 </h2>
-                {!isReSummarizing && article.url && (
-                  <button
-                    onClick={handleReSummarize}
-                    className="px-2 sm:px-3 py-1 sm:py-1.5 text-xs sm:text-sm text-blue-500 hover:text-blue-700 transition-colors self-start sm:self-auto"
+                
+                <div className="flex items-center gap-2">
+                  <select
+                    value={lang}
+                    onChange={(e) => handleLanguageChange(e.target.value)}
+                    className="bg-white border border-gray-300 rounded-md text-gray-700 text-xs sm:text-sm focus:ring-blue-500 focus:border-blue-500 block p-1.5 font-medium cursor-pointer hover:bg-gray-50"
                   >
-                    Re-summarize
-                  </button>
-                )}
+                    {languages.map((l) => (
+                      <option key={l.code} value={l.code}>
+                        {l.name}
+                      </option>
+                    ))}
+                  </select>
+                  
+                  {/* Show Re-summarize button only for URLs (not file uploads) since we auto-translate files */}
+                  {!isReSummarizing && !articleContent && article.url && (
+                    <button
+                      onClick={handleReSummarize}
+                      className="px-2 sm:px-3 py-1 sm:py-1.5 text-xs sm:text-sm text-blue-500 hover:text-blue-700 transition-colors border border-blue-200 rounded-md hover:bg-blue-50"
+                    >
+                      Re-summarize
+                    </button>
+                  )}
+                </div>
               </div>
               <div className="summary_box">
                 <div className="font-inter font-medium text-xs sm:text-sm text-gray-700 leading-relaxed">

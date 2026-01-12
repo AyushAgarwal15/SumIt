@@ -14,21 +14,21 @@ import { motion } from "framer-motion";
 const HowItWorks = () => {
   const steps = [
     {
-      title: "Paste & Submit",
+      title: "Paste, Upload & Translate",
       description:
-        "Paste your article URL in the input field and click the enter button or press return to start the summarization process.",
+        "Paste your article URL or upload a PDF/TXT file. Choose your preferred language for an instant translated summary.",
       icon: <LinkIcon />,
     },
     {
-      title: "AI Processing",
+      title: "AI Processing & Audio",
       description:
-        "Our advanced AI analyzes the article, extracting key points and generating a comprehensive yet concise summary.",
+        "Our AI analyzes the content to generate a summary. You can then listen to it with our Text-to-Speech feature.",
       icon: <ProcessingIcon />,
     },
     {
-      title: "Share Anywhere",
+      title: "Share & Save",
       description:
-        "Share the summary directly to LinkedIn, Twitter, or other platforms with just one click. Perfect for social media and professional networking.",
+        "Your summaries are automatically saved to history. Share them easily to social media or copy to clipboard.",
       icon: <ShareIcon />,
     },
   ];
@@ -41,9 +41,9 @@ const HowItWorks = () => {
   };
 
   const features = [
-    { icon: <ArticleIcon />, text: "Works with any article" },
-    { icon: <SpeedIcon />, text: "Instant summaries" },
-    { icon: <ShareAltIcon />, text: "Easy sharing" },
+    { icon: <ArticleIcon />, text: "Summarize & Translate" },
+    { icon: <SpeedIcon />, text: "Listen to Summaries" },
+    { icon: <ShareAltIcon />, text: "PDF & Text Upload" },
   ];
 
   const containerVariants = {
@@ -74,7 +74,7 @@ const HowItWorks = () => {
           How It <span className="orange_gradient">Works</span>
         </h2>
         <p className="mt-2 sm:mt-3 text-[clamp(0.875rem,1.75vw,1rem)] text-gray-600 max-w-xl mx-auto px-2">
-          Transform any article into a concise summary in three simple steps
+          Transform any article, PDF, or text into a concise summary in any language
         </p>
       </motion.div>
 
@@ -123,8 +123,7 @@ const HowItWorks = () => {
             </h3>
             <p className="text-gray-600 text-[clamp(0.75rem,1.5vw,1rem)] text-center max-w-2xl mx-auto">
               Experience the power of AI-driven article summarization. Simply
-              paste your article link above and let our advanced AI do the rest.
-              Share your summaries across all major platforms with ease!
+              paste your article link or upload a file, translate to your language, and listen on the go!
             </p>
             <div className="mt-3 sm:mt-4 flex flex-wrap justify-center gap-2 text-[clamp(0.75rem,1.25vw,0.875rem)] text-gray-500">
               {features.map((feature, index) => (
