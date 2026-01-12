@@ -156,8 +156,7 @@ const ArticleSummarizer = () => {
       if (navigator.share) {
         await navigator.share({
           title: "Article Summary",
-          text: article.summary,
-          url: window.location.href,
+          text: `${article.summary}\n\nSummarized using SumIt: ${window.location.href}`,
         });
       } else {
         handleCopy(article.summary);
