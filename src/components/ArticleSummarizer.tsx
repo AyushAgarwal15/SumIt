@@ -2,10 +2,12 @@ import { useState, useEffect } from "react";
 import { copy, linkIcon, tick } from "../assets";
 import { useLazyGetSummaryQuery } from "../services/article";
 import ReactMarkdown from "react-markdown";
-import { DeleteIcon, SpeakerIcon, StopIcon } from "../constants/icons";
+import { DeleteIcon, SpeakerIcon, StopIcon, UploadIcon } from "../constants/icons";
 import { motion, AnimatePresence } from "framer-motion";
 import SkeletonLoader from "./common/SkeletonLoader";
 import { toast } from "react-toastify";
+import { extractTextFromPDF } from "../utils/pdfUtils";
+import { useSummarizeTextMutation } from "../services/article";
 
 interface Article {
   url: string;
@@ -24,9 +26,13 @@ const ArticleSummarizer = () => {
   const synth = typeof window !== "undefined" ? window.speechSynthesis : null;
 
   const [voice, setVoice] = useState<SpeechSynthesisVoice | null>(null);
+  const [isExtracting, setIsExtracting] = useState<boolean>(false);
 
   const [getSummary, { error: summaryError, isFetching }] =
     useLazyGetSummaryQuery();
+  const [summarizeText, { isLoading: isTextSummarizing }] = useSummarizeTextMutation();
+
+  const isBusy = isFetching || isTextSummarizing || isExtracting;
 
   useEffect(() => {
     const articlesFromLocalStorage = JSON.parse(
@@ -186,6 +192,59 @@ const ArticleSummarizer = () => {
     }
   };
 
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (file.type !== "application/pdf" && file.type !== "text/plain") {
+      toast.error("Please upload a PDF or TXT file.");
+      return;
+    }
+
+    setIsExtracting(true);
+    try {
+      let text = "";
+      if (file.type === "application/pdf") {
+        text = await extractTextFromPDF(file);
+      } else {
+        text = await file.text();
+      }
+
+      if (!text.trim()) {
+        toast.error("Could not extract text from file.");
+        setIsExtracting(false);
+        return;
+      }
+
+      const result = await summarizeText({ text });
+      
+      if ("data" in result && result.data?.summary) {
+        const data = result.data;
+        const newArticle = {
+          url: file.name, // Use filename as "url" identifier
+          summary: data.summary,
+        };
+        
+        // Add to history
+        const updatedAllArticles = [newArticle, ...allArticles];
+        setAllArticles(updatedAllArticles);
+        localStorage.setItem("articles", JSON.stringify(updatedAllArticles));
+        
+        setArticle(newArticle);
+        setIsReSummarizing(false);
+      } else {
+        toast.error("Failed to generate summary from file.");
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error("Error processing file.");
+    } finally {
+      setIsExtracting(false);
+      // Reset input value
+      e.target.value = "";
+    }
+  };
+
   return (
     <section className="mt-3 sm:mt-4 md:mt-6 lg:mt-8 w-full max-w-xl mx-auto px-2 sm:px-3 md:px-4">
       <div className="flex flex-col w-full gap-1.5">
@@ -214,6 +273,27 @@ const ArticleSummarizer = () => {
             <p className="text-sm sm:text-base">↵</p>
           </button>
         </motion.form>
+
+        <motion.div 
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.3 }}
+          className="flex justify-center items-center w-full"
+        >
+          <label className="flex items-center gap-2 cursor-pointer bg-white border border-dashed border-gray-300 rounded-lg px-4 py-2 hover:bg-gray-50 transition-colors w-full justify-center group">
+             <UploadIcon />
+             <span className="text-sm text-gray-500 group-hover:text-gray-700 font-satoshi">
+               {isExtracting ? "Extracting..." : "Upload PDF or TXT"}
+             </span>
+             <input 
+               type="file" 
+               accept=".pdf,.txt" 
+               onChange={handleFileUpload} 
+               className="hidden" 
+               disabled={isBusy}
+             />
+          </label>
+        </motion.div>
 
         {/* Browse History */}
         <div className="flex flex-col gap-1 max-h-24 sm:max-h-32 md:max-h-40 overflow-y-auto">
@@ -270,7 +350,7 @@ const ArticleSummarizer = () => {
 
       {/* Display Result */}
       <div className="my-4 sm:my-6 md:my-8 max-w-full flex justify-center items-center">
-        {isFetching ? (
+        {isBusy ? (
           <div className="w-full max-w-2xl">
             <SkeletonLoader />
           </div>

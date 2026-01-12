@@ -25,7 +25,17 @@ export const articleApi = createApi({
       query: (params) =>
         `summarize?url=${encodeURIComponent(params.articleUrl)}&length=3`,
     }),
+    summarizeText: builder.mutation<{ summary: string }, { text: string }>({
+      query: (params) => ({
+        url: "summarize-text",
+        method: "POST",
+        body: {
+          text: params.text,
+          lang: "en", 
+        },
+      }),
+    }),
   }),
 });
 console.log(rapidApiKey);
-export const { useLazyGetSummaryQuery } = articleApi;
+export const { useLazyGetSummaryQuery, useSummarizeTextMutation } = articleApi;

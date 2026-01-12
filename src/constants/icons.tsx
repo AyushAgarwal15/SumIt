@@ -10,6 +10,7 @@ import {
   TrashIcon,
   SpeakerWaveIcon,
   StopIcon as HeroStopIcon,
+  DocumentArrowUpIcon,
 } from "@heroicons/react/24/outline";
 
 export const LinkIcon = () => (
@@ -50,3 +51,5 @@ export const DeleteIcon = () => <TrashIcon className="w-4 h-4" />;
 export const SpeakerIcon = () => <SpeakerWaveIcon className="w-3 h-3 sm:w-3.5 sm:h-3.5" />;
 
 export const StopIcon = () => <HeroStopIcon className="w-3 h-3 sm:w-3.5 sm:h-3.5" />;
+
+export const UploadIcon = () => <DocumentArrowUpIcon className="w-5 h-5 sm:w-6 sm:h-6 text-gray-400" />;
