@@ -1,4 +1,4 @@
-# SumIt - AI Article Summarizer
+# SumIt - AI Powered Article Summarizer
 
 SumIt is a modern web application that uses AI to transform lengthy articles into clear, concise summaries. Built with React and powered by advanced AI, it helps users quickly grasp the key points of any article.
 
@@ -31,32 +31,6 @@ SumIt is a modern web application that uses AI to transform lengthy articles int
 - **API Integration**: RTK Query
 - **Animation**: CSS Animations
 - **Deployment**: Vercel
-
-## Getting Started
-
-1. Clone the repository:
-
-   ```bash
-   git clone https://github.com/AyushAgarwal15/AI_Summarizer.git
-   ```
-
-2. Install dependencies:
-
-   ```bash
-   cd AI_Summarizer
-   npm install
-   ```
-
-3. Create a `.env` file in the root directory and add your API key:
-
-   ```env
-   VITE_RAPID_API_ARTICLE_KEY=your_api_key_here
-   ```
-
-4. Start the development server:
-   ```bash
-   npm run dev
-   ```
 
 ## Usage
 
